@@ -1,5 +1,6 @@
 package persistenceServices
 
-func LocalEntry() {
-
+func LocalEntry(docType documentType) (*PersistenceLayer, error) {
+	p, err := GetPersistenceLayer(docType)
+	return p, err
 }
