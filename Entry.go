@@ -1,0 +1,5 @@
+package persistenceServices
+
+func LocalEntry() {
+
+}
