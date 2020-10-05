@@ -2,15 +2,18 @@
 
 ## Introduction
 
-Implements a persistence layer
+This module implements a persistence layer, with optional CQRS
 
 - Google Firestore
 - Google Pubsub
 - [Future] Azure Cosmodb
 - [Future] Azure Event Hub
+- etc
 
+## Installation
 ```
 go get github.com/adeturner/persistenceServices
+go test
 ```
 
 ## Implementation
@@ -54,9 +57,10 @@ func (d DocType) Topic() string {
 Instantiate the persistenceLayer
 
 ```
-persistenceLayer *persistenceServices.PersistenceLayer
-
-persistenceLayer, err := persistenceServices.GetPersistenceLayer(docType)
+var persistenceLayer *persistenceServices.PersistenceLayer
+ver err error
+d := DOCUMENT_TYPE_USERS
+persistenceLayer, err = persistenceServices.GetPersistenceLayer(d)
 ```
 
 Available functions
@@ -84,9 +88,9 @@ Environment variables control the data layer access
 ```
 export CLOUDEVENT_DOMAIN=mydomain.com // Cloud events will have source {CLOUDEVENT_DOMAIN}/{docType.String}
 export DEBUG=false            // if true, debug output on
-export USE_FIRESTORE=true     // if true reads will come from here
-export USE_PUBSUB=true        // if true writes will be sent to the topic
-export USE_CQRS=false         // if true writes are sent to the topic
+export USE_FIRESTORE=true     // if true reads will come from here; writes will also go here if USE_CQRS=false
+export USE_PUBSUB=true        // if true enables a pubsub connection
+export USE_CQRS=false         // if true writes are sent to pubsub
 export GCP_PROJECT=myproject  // project for GCP connections
 export GOOGLE_APPLICATION_CREDENTIALS=~/secrets/persistenceServices.json  // if testing outside of GCP
 ```
