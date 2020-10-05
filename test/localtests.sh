@@ -12,6 +12,5 @@ export GOOGLE_APPLICATION_CREDENTIALS=~/secrets/apiv01-persistenceServices.json
 // and create the secrets file
 gcloud iam service-accounts keys create ${GOOGLE_APPLICATION_CREDENTIALS} --iam-account myserviceaccount@apiv01.iam.gserviceaccount.com
 
-
 go run cmd/main.go
 
