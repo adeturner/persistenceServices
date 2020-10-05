@@ -1,6 +1,6 @@
 # persistenceServices
 
-Sharing out of good will
+Sharing out of good will and generally unsupported
 
 ... I'm still debating its usefulness so please raise an issue if you wish to contribute and we'll discuss
 
