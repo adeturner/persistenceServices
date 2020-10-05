@@ -1,5 +1,11 @@
 # persistenceServices
 
+Sharing out of good will
+
+... I'm still debating its usefulness so please raise an issue if you wish to contribute and we'll discuss
+
+Thanks, Adrian
+
 ## Introduction
 
 This module implements a persistence layer, with optional CQRS
@@ -37,6 +43,7 @@ const (
 	DOCUMENT_TYPE_STOCK
 )
 
+// Generic name for the Document, used as the Firestore Collection name
 func (d DocType) String() string {
 	return [...]string{
 		"Users",
@@ -45,6 +52,7 @@ func (d DocType) String() string {
 	}[d]
 }
 
+// Returns the eventing topic name; topic must be precreated
 func (d DocType) Topic() string {
 	return [...]string{
 		"usersTopic",
