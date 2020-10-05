@@ -84,7 +84,7 @@ func (p *PersistenceLayer) AddDocument(key string, values interface{}) error {
 		err = p.firestoreConnection.FirestoreAdd(key, values)
 	}
 	if err == nil && p.usePubsub && p.useCQRS {
-		err = p.publish(EVENT_TYPE_CREATE, key, values)
+		err = p.Publish(EVENT_TYPE_CREATE, key, values)
 	}
 
 	return err
@@ -99,7 +99,7 @@ func (p *PersistenceLayer) UpdateDocument(key string, values interface{}) error 
 		err = p.firestoreConnection.FirestoreUpdate(key, values)
 	}
 	if err == nil && p.usePubsub && p.useCQRS {
-		err = p.publish(EVENT_TYPE_UPDATE, key, values)
+		err = p.Publish(EVENT_TYPE_UPDATE, key, values)
 	}
 
 	return err
@@ -114,7 +114,7 @@ func (p *PersistenceLayer) DeleteDocument(key string, values interface{}) error 
 		err = p.firestoreConnection.FirestoreDelete(key, values)
 	}
 	if err == nil && p.usePubsub && p.useCQRS {
-		err = p.publish(EVENT_TYPE_DELETE, key, values)
+		err = p.Publish(EVENT_TYPE_DELETE, key, values)
 	}
 
 	return err
@@ -122,7 +122,7 @@ func (p *PersistenceLayer) DeleteDocument(key string, values interface{}) error 
 }
 
 // Publish to Pubsub
-func (p *PersistenceLayer) publish(eventType EventType, key string, values interface{}) error {
+func (p *PersistenceLayer) Publish(eventType EventType, key string, values interface{}) error {
 
 	// Producers MUST ensure that source + id is unique for each distinct event.
 	// Consumers MAY assume that Events with identical source and id are duplicates.
