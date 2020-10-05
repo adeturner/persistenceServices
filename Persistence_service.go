@@ -124,9 +124,6 @@ func (p *PersistenceLayer) DeleteDocument(key string, values interface{}) error 
 // Publish to Pubsub
 func (p *PersistenceLayer) Publish(eventType EventType, key string, values interface{}) error {
 
-	// Producers MUST ensure that source + id is unique for each distinct event.
-	// Consumers MAY assume that Events with identical source and id are duplicates.
-
 	var cloudevent []byte
 
 	payload, err := json.Marshal(values)
@@ -142,7 +139,6 @@ func (p *PersistenceLayer) Publish(eventType EventType, key string, values inter
 		event.SetSource(p.cloudeventDomain + "/" + p.docType.String())
 		event.SetType(eventType.String())
 		event.SetID(key)
-		// map[string]string{"hello": "world"}
 		event.SetData(cloudevents.ApplicationJSON, payload)
 
 		cloudevent, err = json.Marshal(event)
@@ -181,7 +177,6 @@ func (p *PersistenceLayer) FindByTags(tags []string, strlimit string, value inte
 
 	if p.useFirestore {
 		fmt.Println(fmt.Sprintf("Source.FindByTags : firestore find starting"))
-		//valuesArray, err = p.firestoreConnection.FirestoreFindByTags(tags, strlimit, value, valuesArray)
 		valuesArray, err = p.firestoreConnection.FirestoreFindByTags(tags, strlimit, value)
 	}
 
