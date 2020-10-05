@@ -164,19 +164,22 @@ strlimit = integer limit of the number of rows after which to stop
 value = pass in the type, e.g. Source{}
 valuesArray, pass in an array of the type, e.g. []Source{}
 */
-func (f *FirestoreConnection) FirestoreFindByTags(tags []string, strlimit string, value interface{}, valuesArray interface{}) (interface{}, error) {
+//func (f *FirestoreConnection) FirestoreFindByTags(tags []string, strlimit string, value interface{}, valuesArray interface{}) (interface{}, error) {
+func (f *FirestoreConnection) FirestoreFindByTags(tags []string, strlimit string, value interface{}) (interface{}, error) {
 
 	var err error
 	var limit int
 	var docSnaps []*firestore.DocumentSnapshot
 
-	vArray, ok := valuesArray.([]interface{})
+	/*
+		vArray, ok := valuesArray.([]interface{})
 
-	if !ok {
-		fmt.Println(fmt.Sprintf("FirestoreConnection.findbyTags.1 Failed to cast valuesArray to array type"))
-		err = errors.New("FirestoreConnection.findbyTags.1 Failed to cast valuesArray to array type")
+		if !ok {
+			fmt.Println(fmt.Sprintf("FirestoreConnection.findbyTags.1 Failed to cast valuesArray to array type"))
+			err = errors.New("FirestoreConnection.findbyTags.1 Failed to cast valuesArray to array type")
 
-	}
+		}
+	*/
 
 	limit, err = strconv.Atoi(strlimit)
 	if err != nil {
@@ -212,6 +215,8 @@ func (f *FirestoreConnection) FirestoreFindByTags(tags []string, strlimit string
 			}
 		}
 	}
+
+	var vArray []interface{}
 
 	if err == nil {
 		cnt := 0

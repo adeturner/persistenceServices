@@ -24,7 +24,7 @@ func GetPersistenceLayer(docType documentType) (*PersistenceLayer, error) {
 
 	p.cloudeventDomain = os.Getenv("CLOUDEVENT_DOMAIN")
 	if p.cloudeventDomain == "" {
-		return nil, errors.New("Error: GetPersistenceLayer DOMAIN environment variable not set!")
+		return nil, errors.New("Error: GetPersistenceLayer CLOUDEVENT_DOMAIN environment variable not set!")
 	}
 
 	if os.Getenv("DEBUG") == "true" {
@@ -181,7 +181,8 @@ func (p *PersistenceLayer) FindByTags(tags []string, strlimit string, value inte
 
 	if p.useFirestore {
 		fmt.Println(fmt.Sprintf("Source.FindByTags : firestore find starting"))
-		valuesArray, err = p.firestoreConnection.FirestoreFindByTags(tags, strlimit, value, valuesArray)
+		//valuesArray, err = p.firestoreConnection.FirestoreFindByTags(tags, strlimit, value, valuesArray)
+		valuesArray, err = p.firestoreConnection.FirestoreFindByTags(tags, strlimit, value)
 	}
 
 	return valuesArray, err
