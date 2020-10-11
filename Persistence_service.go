@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/adeturner/observability"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 )
 
@@ -29,29 +30,29 @@ func GetPersistenceLayer(docType documentType) (*PersistenceLayer, error) {
 
 	if os.Getenv("DEBUG") == "true" {
 		p.debug = true
-		fmt.Println(fmt.Sprintf("GetPersistenceLayer : DEBUG on"))
+		observability.Logger("Info", fmt.Sprintf("GetPersistenceLayer : DEBUG on"))
 	} else {
 		p.debug = false
-		fmt.Println(fmt.Sprintf("GetPersistenceLayer : DEBUG off"))
+		observability.Logger("Info", fmt.Sprintf("GetPersistenceLayer : DEBUG off"))
 	}
 
 	if os.Getenv("USE_FIRESTORE") == "true" {
 		p.useFirestore = true
-		fmt.Println(fmt.Sprintf("GetPersistenceLayer : USE_FIRESTORE on"))
+		observability.Logger("Info", fmt.Sprintf("GetPersistenceLayer : USE_FIRESTORE on"))
 	} else {
 		p.useFirestore = false
 	}
 
 	if os.Getenv("USE_PUBSUB") == "true" {
 		p.usePubsub = true
-		fmt.Println(fmt.Sprintf("GetPersistenceLayer : USE_PUBSUB on"))
+		observability.Logger("Info", fmt.Sprintf("GetPersistenceLayer : USE_PUBSUB on"))
 	} else {
 		p.usePubsub = false
 	}
 
 	if os.Getenv("USE_CQRS") == "true" {
 		p.useCQRS = true
-		fmt.Println(fmt.Sprintf("GetPersistenceLayer : USE_CQRS on"))
+		observability.Logger("Info", fmt.Sprintf("GetPersistenceLayer : USE_CQRS on"))
 	} else {
 		p.useCQRS = false
 	}
@@ -129,11 +130,11 @@ func (p *PersistenceLayer) Publish(eventType EventType, key string, values inter
 	payload, err := json.Marshal(values)
 
 	if err != nil {
-		fmt.Println(fmt.Sprintf("Source.PublishPubsub : Error Failed to marshall to json topic=Source error=%v", err))
+		observability.Logger("Error", fmt.Sprintf("Source.PublishPubsub : Error Failed to marshall to json topic=Source error=%v", err))
 
 	} else {
 
-		fmt.Println(fmt.Sprintf("Source.PublishPubsub : Publishing Payload=%v", string(payload)))
+		observability.Logger("Info", fmt.Sprintf("Source.PublishPubsub : Publishing Payload=%v", string(payload)))
 
 		event := cloudevents.NewEvent()
 		event.SetSource(p.cloudeventDomain + "/" + p.docType.String())
@@ -143,14 +144,14 @@ func (p *PersistenceLayer) Publish(eventType EventType, key string, values inter
 
 		cloudevent, err = json.Marshal(event)
 
-		fmt.Println(fmt.Sprintf("Publishing topic=Source bytes=%v", string(cloudevent)))
+		observability.Logger("Info", fmt.Sprintf("Publishing topic=Source bytes=%v", string(cloudevent)))
 
 	}
 
 	if err == nil {
 		err = p.pubsubConnection.publish(p.docType.Topic(), cloudevent)
 		if err != nil {
-			fmt.Println(fmt.Sprintf("Source.PublishPubsub : Error: failed to publish to topic=Source error=%v", err))
+			observability.Logger("Error", fmt.Sprintf("Source.PublishPubsub : Error: failed to publish to topic=Source error=%v", err))
 		}
 	}
 
@@ -176,7 +177,7 @@ func (p *PersistenceLayer) FindByTags(tags []string, strlimit string, value inte
 	var err error
 
 	if p.useFirestore {
-		fmt.Println(fmt.Sprintf("Source.FindByTags : firestore find starting"))
+		observability.Logger("Info", fmt.Sprintf("Source.FindByTags : firestore find starting"))
 		valuesArray, err = p.firestoreConnection.FirestoreFindByTags(tags, strlimit, value)
 	}
 

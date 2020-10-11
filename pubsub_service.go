@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/adeturner/observability"
 )
 
 func GetPubsubConnection(gcpProjectID string) (*PubsubConnection, error) {
@@ -26,14 +27,14 @@ func GetPubsubConnection(gcpProjectID string) (*PubsubConnection, error) {
 		p.client = *client
 
 		if err != nil {
-			fmt.Println(fmt.Sprintf("GetPubsubConnection.1: Error %v", err))
+			observability.Logger("Error", fmt.Sprintf("GetPubsubConnection.1: Error %v", err))
 			return &p, nil
 		} else {
 
 		}
 
 	} else {
-		fmt.Println(fmt.Sprintf("GetPubsubConnection.2: Error %v", err))
+		observability.Logger("Error", fmt.Sprintf("GetPubsubConnection.2: Error %v", err))
 	}
 
 	return &p, err
@@ -52,7 +53,7 @@ func (p *PubsubConnection) publish(topicID string, msg []byte) error {
 	if err != nil {
 		return fmt.Errorf("Get: %v", err)
 	}
-	fmt.Println(fmt.Sprintf("Published a message; msg ID: %v\n", id))
+	observability.Logger("Info", fmt.Sprintf("Published a message; msg ID: %v\n", id))
 
 	return err
 }
