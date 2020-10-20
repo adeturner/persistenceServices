@@ -175,7 +175,7 @@ func (p *PersistenceLayer) FindById(key string, values interface{}) (interface{}
 func (p *PersistenceLayer) Find(queryParams map[string][]string, value interface{}) (valuesArray interface{}, err error) {
 
 	if p.useFirestore {
-		observability.Logger("Info", fmt.Sprintf("Source.FindByTags : firestore find starting"))
+		observability.Logger("Info", fmt.Sprintf("firestore find starting"))
 		valuesArray, err = p.firestoreConnection.FirestoreFind(queryParams, value)
 	}
 
