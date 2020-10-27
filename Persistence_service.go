@@ -65,16 +65,16 @@ func (p *PersistenceLayer) Publish(eventType EventType, key string, values inter
 	payload, err := json.Marshal(values)
 
 	if err != nil {
-		observability.Logger("Error", fmt.Sprintf("Source.PublishPubsub : Error Failed to marshall to json topic=Source error=%v", err))
+		observability.Logger("Error", fmt.Sprintf("Error Failed to marshall to json topic=Source error=%v", err))
 
 	} else {
 
-		observability.Logger("Info", fmt.Sprintf("Source.PublishPubsub : Publishing Payload=%v", string(payload)))
+		observability.Logger("Info", fmt.Sprintf("Publishing Payload=%v", string(payload)))
 
 		event := cloudevents.NewEvent()
 		event.SetSource(p.cloudeventDomain + "/" + p.docType.String())
 		event.SetType(eventType.String())
-		event.SetID(key)
+		event.SetID(observability.GetCorrId())
 		event.SetData(cloudevents.ApplicationJSON, payload)
 
 		cloudevent, err = json.Marshal(event)
@@ -86,7 +86,7 @@ func (p *PersistenceLayer) Publish(eventType EventType, key string, values inter
 	if err == nil && p.usePubsub {
 		err = p.pubsubConnection.publish(p.docType.Topic(), cloudevent)
 		if err != nil {
-			observability.Logger("Error", fmt.Sprintf("Source.PublishPubsub : Error: failed to publish to topic=Source error=%v", err))
+			observability.Logger("Error", fmt.Sprintf("Error: failed to publish to topic=Source error=%v", err))
 		}
 	}
 
