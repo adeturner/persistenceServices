@@ -28,7 +28,7 @@ go test
 
 Define a docType, must implement documentType:
 
-```
+```go
 type documentType interface {
 	String() string
 	Topic() string
@@ -64,15 +64,21 @@ func (d DocType) Topic() string {
 
 Instantiate the persistenceLayer
 
-```
+```go
 var persistenceLayer *persistenceServices.PersistenceLayer
 ver err error
 d := DOCUMENT_TYPE_USERS
-persistenceLayer, err = persistenceServices.GetPersistenceLayer(d)
+
+// deprecated
+p, err := GetPersistenceLayer(docType)
+
+// new
+p, err = GetLayer()
+p.SetDocType(docType)
 ```
 
 Available functions
-```
+```go
 func GetPersistenceLayer(docType documentType) (*PersistenceLayer, error) {
 func (p *PersistenceLayer) AddDocument(key string, values interface{}) error {
 func (p *PersistenceLayer) UpdateDocument(key string, values interface{}) error {
@@ -83,7 +89,7 @@ func (p *PersistenceLayer) FindByTags(tags []string, strlimit string, value inte
 
 Example usage
 
-```
+```go
 UUID := uuid.New().String()
 u := User{Id: UUID, Name: "SomeName", Tag: "SomeTags"}
 err := p.AddDocument(UUID, u)
@@ -93,7 +99,7 @@ err := p.AddDocument(UUID, u)
 
 Environment variables control the data layer access
 
-```
+```go
 export CLOUDEVENT_DOMAIN=mydomain.com // Cloud events will have source {CLOUDEVENT_DOMAIN}/{docType.String}
 export DEBUG=false            // if true, debug output on
 export USE_FIRESTORE=true     // if true reads will come from here; writes will also go here if USE_CQRS=false
@@ -105,7 +111,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=~/secrets/persistenceServices.json  // if 
 
 ### Tests
 
-```
+```go
 ./test/localtests.sh
 ```
 

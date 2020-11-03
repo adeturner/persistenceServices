@@ -10,10 +10,10 @@ import (
 	"github.com/adeturner/observability"
 )
 
-// GetFirestoreConnection -
+// GetFirestoreConnection - deprecated
 func GetFirestoreConnection(gcpProjectID string, collectionStr string) (*FirestoreConnection, error) {
 
-	observability.Logger("Debug", fmt.Sprintf("starting"))
+	observability.Logger("Debug", fmt.Sprintf("firestore_service.GetFirestoreConnection is deprecated"))
 
 	f := FirestoreConnection{}
 
@@ -44,6 +44,43 @@ func GetFirestoreConnection(gcpProjectID string, collectionStr string) (*Firesto
 	}
 
 	return &f, err
+}
+
+// GetFirestore -
+func GetFirestore(gcpProjectID string) (*FirestoreConnection, error) {
+
+	observability.Logger("Debug", fmt.Sprintf("starting"))
+
+	f := FirestoreConnection{}
+
+	if gcpProjectID == "" {
+		return &f, errors.New("Error: GCP_PROJECT environment variable not set!")
+	}
+
+	observability.Logger("Debug", fmt.Sprintf("getting context"))
+	f.ctx = context.Background()
+
+	observability.Logger("Debug", fmt.Sprintf("have context, new client"))
+
+	client, err := firestore.NewClient(f.ctx, gcpProjectID)
+
+	observability.Logger("Debug", fmt.Sprintf("new client complete"))
+
+	if err != nil {
+		observability.Logger("Error", fmt.Sprintf("Error %v", err))
+		return &f, nil
+
+	} else {
+		f.client = *client
+		observability.Logger("Info", fmt.Sprintf("success"))
+	}
+
+	return &f, err
+}
+
+func (f *FirestoreConnection) SetCollection(collectionStr string) {
+	c := f.client.Collection(collectionStr)
+	f.collection = *c
 }
 
 // FirestoreAdd -
